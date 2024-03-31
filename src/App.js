@@ -41,23 +41,36 @@ function Board({ xIsNext, squares, onPlay }){
     onPlay(nextSquares);
  
   }
+
+  function createBoard(squares) {
+    const rows = [];
+    // iterate through each row and push row as a list item to rows
+    for (let row = 0; row < 3; row++) {
+      const columns = [];
+      // iterate through each column and push column Square as a list item to columns
+      for (let col = 0 + row*3; col  < 3 + row*3; col++) {
+        columns.push(
+          <Square
+            key={col}
+            className="board-row"
+            value={squares[col]}
+            onSquareClick={() => handleClick(col)}
+          />
+        );
+      }
+      rows.push(
+        <div key={row} className="board-row">
+          {columns}
+        </div>
+      );
+    }
+    return rows;
+  }
   return(
     <>
-      <div className="status">{status}</div>
+    <div className="status">{status}</div>
       <div className="board-row">
-        <Square value = {squares[0]} onSquareClick = {() => handleClick(0)} />
-        <Square value = {squares[1]} onSquareClick = {() => handleClick(1)} />
-        <Square value = {squares[2]} onSquareClick = {() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value = {squares[3]} onSquareClick = {() => handleClick(3)} />
-        <Square value = {squares[4]} onSquareClick = {() => handleClick(4)} />
-        <Square value = {squares[5]} onSquareClick = {() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value = {squares[6]} onSquareClick = {() => handleClick(6)} />
-        <Square value = {squares[7]} onSquareClick = {() => handleClick(7)} />
-        <Square value = {squares[8]} onSquareClick = {() => handleClick(8)} />
+      {createBoard(squares)}
       </div>
     </>
   )
