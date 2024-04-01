@@ -13,15 +13,31 @@ function Square({value, onSquareClick}) {
 }
 
 
-function Board({ xIsNext, squares, onPlay }){
+function Board({ xIsNext, squares, onPlay, currentMove }){
   const winner = calculateWinner(squares);
   let status;
-
+  let winnerStyle = {};
+  
   if (winner){
     status = "Winner: " + winner;
+    winnerStyle = {
+      backgroundColor: 'yellow',
+      color: 'red',
+      textAlign: 'center',
+      fontWeight: 'bold'
+    }
+  }
+  else if (currentMove === 9){
+    status = "Draw";
+    winnerStyle = {
+      backgroundColor: 'yellow',
+      color: 'blue',
+      textAlign: 'center'
+    }
   }
   else{
     status = "Next player: " + (xIsNext ? "X" : "O");
+    
   }
   
   function handleClick(i) {
@@ -68,7 +84,10 @@ function Board({ xIsNext, squares, onPlay }){
   }
   return(
     <>
-    <div className="status">{status}</div>
+    <div className="status"
+    style={winnerStyle}>
+      {status}
+      </div>
       <div className="board-row">
       {createBoard(squares)}
       </div>
@@ -92,29 +111,33 @@ export default function Game(){
     setCurrentMove(nextMove);
   }
 
-  const moves = history.map((squares, move)=>{
-    let description;
-    let style = {color: 'red'};
-    
-    if (move > 0){
-      description = 'Go to move #' + move;
-    }
-    else{
-      description = 'Go to game start';
-    }
+  const moves = history.map((squares, move) => {
+    const description = move === 0 ? 'Go to game start' : 
+      (move === currentMove ? 'You are at move # ': 'Go to move # ') + move;
+
+    const style = move === currentMove ? { 
+      color: 'white',
+      backgroundColor: 'green'
+  } : null;
+
+  const isDisabled = move === currentMove;
+
     return (
       <li key={move}>
-        <button 
-          style={move === currentMove ? style : null}  
-          onClick={() => jumpTo(move)}>{description}</button>
+        <button
+          style={style}
+          onClick={() => jumpTo(move)}
+          disabled = {isDisabled}>
+          {description}
+        </button>
       </li>
-    )
-  })
+    );
+  });
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} currentMove={currentMove} />
       </div>
       <div className="game-info">
         <div>{/* status */}</div>
