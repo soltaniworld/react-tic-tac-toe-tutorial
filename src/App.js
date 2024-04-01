@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
 
-function Square({value, onSquareClick}) {
+function Square({ value, onSquareClick, classAddons }) {
   // const [value, setValue] = useState(null);
 
   return <button 
-    className="square"
+    className = {`square ${classAddons}`}
     onClick={onSquareClick}
     >
       {value}
@@ -14,7 +14,7 @@ function Square({value, onSquareClick}) {
 
 
 function Board({ xIsNext, squares, onPlay, currentMove }){
-  const winner = calculateWinner(squares);
+  const [winner, winnerSquares] = calculateWinner(squares);
   let status;
   let winnerStyle = {};
   
@@ -41,7 +41,7 @@ function Board({ xIsNext, squares, onPlay, currentMove }){
   }
   
   function handleClick(i) {
-    if(squares[i] || calculateWinner(squares)){
+    if(squares[i] || winner){
       return;
     }
 
@@ -58,7 +58,7 @@ function Board({ xIsNext, squares, onPlay, currentMove }){
  
   }
 
-  function createBoard(squares) {
+  function createBoard(squares, winnerSquares) {
     const rows = [];
     // iterate through each row and push row as a list item to rows
     for (let row = 0; row < 3; row++) {
@@ -68,9 +68,9 @@ function Board({ xIsNext, squares, onPlay, currentMove }){
         columns.push(
           <Square
             key={col}
-            className="board-row"
             value={squares[col]}
             onSquareClick={() => handleClick(col)}
+            classAddons={winnerSquares.includes(col) ? 'winner' : ''}
           />
         );
       }
@@ -89,7 +89,7 @@ function Board({ xIsNext, squares, onPlay, currentMove }){
       {status}
       </div>
       <div className="board-row">
-      {createBoard(squares)}
+      {createBoard(squares, winnerSquares)}
       </div>
     </>
   )
@@ -162,8 +162,8 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a], [a,b,c]];
     }
   }
-  return null;
+  return [null, Array(3).fill(null)];
 }

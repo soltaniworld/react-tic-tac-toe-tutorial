@@ -58,6 +58,7 @@ body {
 
 .square {
   background: #fff;
+  color: crimson;
   border: 1px solid #999;
   float: left;
   font-size: 24px;
@@ -87,4 +88,10 @@ body {
 
 .game-info {
   margin-left: 20px;
+}
+
+.winner {
+  font-weight: bold;
+  color: yellow;
+  background-color: coral;
 }
